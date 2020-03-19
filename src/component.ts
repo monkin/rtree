@@ -40,40 +40,6 @@ export function afterDispose<NodeType>(component: Component<NodeType>, effect: E
     };
 }
 
-/**
- * The same as `changes`, but the effect can have some disposable data.
- * See also React.useEffect.
- */
-export function stream<P extends Param<any>[]>(...input: P) {
-    if (input.every(v => isValue(v))) {
-        return (mapping: (...params: UnwrapList<P>) => void | Effect): Component<undefined> => {
-            const dispose = mapping(...(input as any));
-            return {
-                update: noop,
-                dispose: dispose || noop
-            };
-        }
-    } else {
-        return (mapping: (...params: UnwrapList<P>) => void | Effect): Component<undefined> => {
-            let values = input.map(unwrap) as any,
-                dispose = mapping(...values);
-            return {
-                update() {
-                    const newValues = input.map(unwrap);
-                    if (newValues.some((v, i) => v !== values[i])) {
-                        dispose && dispose();
-                        values = newValues;
-                        dispose = mapping(...values);
-                    }
-                },
-                dispose() {
-                    dispose && dispose();
-                }
-            };
-        }
-    }
-}
-
 export interface Factory<NodeType> {
     none(): NodeType;
     container(): NodeType;
