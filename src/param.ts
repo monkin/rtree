@@ -82,7 +82,7 @@ export function changes<P extends Param<any>[]>(...input: P) {
  */
 export function stream<P extends Param<any>[]>(...input: P) {
     if (input.every(v => isValue(v))) {
-        return (mapping: (...params: UnwrapList<P>) => void | Effect): Component<undefined> => {
+        return (mapping: (...params: UnwrapList<P>) => void | Effect): Component => {
             const dispose = mapping(...(input as any));
             return {
                 update: noop,
@@ -90,7 +90,7 @@ export function stream<P extends Param<any>[]>(...input: P) {
             };
         }
     } else {
-        return (mapping: (...params: UnwrapList<P>) => void | Effect): Component<undefined> => {
+        return (mapping: (...params: UnwrapList<P>) => void | Effect): Component => {
             let values = input.map(unwrap) as any,
                 dispose = mapping(...values);
             return {

@@ -2,7 +2,7 @@ import { Effect, composeEffects, noop } from "./effects";
 import { Param, changes, isValue, UnwrapList, unwrap, map } from "./param";
 
 
-export interface Component<NodeType> {
+export interface Component<NodeType = undefined> {
     node?: NodeType;
     update: Effect;
     dispose: Effect;
